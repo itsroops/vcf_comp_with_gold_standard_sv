@@ -44,16 +44,16 @@ Other slurm options can also be used in conjunction. Please refer to the detaile
 ## Outputs
 The outputs from the tool can be categorized into three forms, namely, *log files* and *plot files* and *other result files*.
 
-1. There are two types of *log files* which are generated in the $installation_path/vcf_comp_with_gold_standard folder.
+1. There are two types of *log files* which are generated in the $installation_path/vcf_comp_with_gold_standard_sv folder.
        
    * *mainlog.txt*: This file is generated during the actual execution of the tool and it records all the steps in details.
    * *slurm-jobid.out*: There are several of these files which log the events of the slurm jobs which have been submitted to the scheduler. 
 
-2. The *parameters.txt* file is also generated which cotains the list of parameters which have been passed by the user for running the program. This is also found in the $installation_path/vcf_comp_with_gold_standard folder.
+2. The *parameters.txt* file is also generated which cotains the list of parameters which have been passed by the user for running the program. This is also found in the $installation_path/vcf_comp_with_gold_standard_sv folder.
   
 3.  A *summary file* containing the metrices is generated in the *xlsx* format. Also, there are *plot files* which are generated that include the combined bar plots comparing the values for different metrices like recall, precision and  f1 scores for all the vcf files. They are generated in the *pdf* format. These are generated in the output path which is specified by the user.
 
-4.  The *other result files* contain outputs from the *hap.py* tool run. These are also generated in the output path which is specified by the user.
+4.  The *other result files* contain outputs from the *Truvari* tool run. These are also generated in the output path which is specified by the user.
 
 ## References
 1. For the **Truvari** tool: https://github.com/spiralgenetics/truvari

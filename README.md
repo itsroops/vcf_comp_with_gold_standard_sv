@@ -6,7 +6,8 @@ This tool would use the **Truvari** comparison tool for comparing the generated 
 ## Prerequisites
 
 1. Linux clusters having **slurm workload manager**. 
-2. Availability of **git** program. It can be checked using `which git`. This is required for cloning the guthub repository.
+2. Availability of **wget** program. It can be checked using `which wget`. This is required for downloading files.
+3. Availability of **git** program. It can be checked using `which git`. This is required for cloning the guthub repository.
 
 ## Installation
 Following are the steps of installation:

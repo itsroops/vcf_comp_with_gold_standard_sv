@@ -55,7 +55,7 @@ The outputs from the tool can be categorized into three forms, namely, *log file
 4.  The *other result files* contain outputs from the *hap.py* tool run. These are also generated in the output path which is specified by the user.
 
 ## References
-1. For the **truvari ** tool: https://github.com/spiralgenetics/truvari
+1. For the **truvari** tool: https://github.com/spiralgenetics/truvari
 
 2. For installing **git**: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 

@@ -1,8 +1,5 @@
 #! /bin/sh
 
-# Navigating to the vcf files
-files=`ls $vcf_folder/*.vcf`
-
 echo -e "Submitting jobs for all the vcf files:\n"
 
 job_time=$(date +"%s")

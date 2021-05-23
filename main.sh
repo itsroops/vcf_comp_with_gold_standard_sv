@@ -659,7 +659,7 @@ do
 
 `$truvari_path/bgzip -c $var > $var.gz`
 
-echo -e "\nThe vcf files are compressed using the bgzip program"
+echo -e "\nThe vcf files are compressed using the bgzip program" `date` >> mainlog.txt
 
 done
 
@@ -671,7 +671,7 @@ do
 
 `$truvari_path/tabix -p vcf $var`
 
-echo -e "\nThe indexed files are created of the zipped vcf files\n\n"
+echo -e "\nThe indexed files are created of the zipped vcf files\n\n" `date` >> mainlog.txt
 
 done
 

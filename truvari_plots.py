@@ -74,7 +74,7 @@ def truvari_plots(filepath):
     # Extracting the file names
     for i in mylist:
         p = i.split("/",k)[-1]
-        p=p.split(".")[:-2]
+        p=p.split(".")[:-3]
         p=".".join(p)
         labels.append(p)
 

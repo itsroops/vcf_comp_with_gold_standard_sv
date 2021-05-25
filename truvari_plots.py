@@ -45,7 +45,7 @@ def truvari_plots(filepath):
     """
     
     # Selecting the files that need to be compared
-    #filepath=sys.argv[1]
+    filepath=sys.argv[1]
     mylist = [f for f in glob.glob(filepath + "/*.summary.txt")]
 
     # Initializing lists for metrics calculations

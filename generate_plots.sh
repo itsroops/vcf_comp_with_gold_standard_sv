@@ -10,8 +10,11 @@ for var in $files
 do
 
 # Reading the filename
-file_name=`echo $var | rev | cut -d'/' -f 1 | rev`
-file_name=$out/$out_name/$file_name
+file_name=`echo $var | rev | cut -d'/' -f 1 | cut -d'.' -f 3- | rev`
+
+# Selecting the temporary output folder name
+temp_folder=$out/$out_name/$file_name
+
 
 # Declaring array for storing submitted jobs
 declare -a jobs
@@ -31,35 +34,35 @@ declare -a out_of_memory
 
 # The case when the account, partition and mail_id parameters are null
 if [[ -z $acc && -z $par && -z $mail_id ]] ; then
-   k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+   k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the account and  partition are null whereas mail_id parameters is not null
 elif [[ -z $acc && -z $par && ! -z $mail_id ]] ; then
-     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the account and mail_id are null whereas the partition is not null
 elif [[	-z $acc	&& ! -z $par && -z $mail_id ]] ; then
-     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time  --partition=$par --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time  --partition=$par --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the account is null whereas partition and mail_id parameters are not null
 elif [[ -z $acc && ! -z $par && ! -z $mail_id ]] ; then
-     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time  --partition=$par --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time  --partition=$par --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the partition and mail id are null whereas the account is not null
 elif [[ ! -z $acc && -z $par && -z $mail_id ]] ; then
-     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the partition is null whereas the account and mail_id are not null
 elif [[ ! -z $acc && -z $par && ! -z $mail_id ]] ; then
-     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the account and partition parameters are not null and mail id is null
 elif [[ ! -z $acc && ! -z $par && -z $mail_id ]] ; then
-     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --partition=$par --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+     k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --partition=$par --mail-type=$mail_type vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 # The case when the account, partition and mail id are not null
 else
-  k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --partition=$par --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $file_name $ref`
+  k=`sbatch --cpus-per-task=$cpt --mem=$mem --time=$tot_time --account=$acc --partition=$par --mail-type=$mail_type --mail-user=$mail_id vcf_comp.sh $truvari_path $vcf_gold $var $temp_folder $ref`
 
 fi
 
@@ -249,8 +252,27 @@ sleep 2
 
 done
 
+output=$out/$out_name
+
+dirs=`ls $output`
+
+# Collecting all the output in temporary directories and then consolidating them in only one
+
+for dir in $dirs
+do
+
+all_files=`ls $output/$dir`
+
+for f in $all_files
+do
+mv $output/$dir/$f $output/$dir.$f
+done
+
+rmdir $output/$dir
+done
+
 # Checking if the jobs that are queued have run successfully or not
-count=`ls -1 $out/$out_name/*.summary.txt 2>/dev/null | wc -l`
+count=`ls -1 $output/*.summary.txt 2>/dev/null | wc -l`
 
 if [[ $count == 0 ]] ; then
    echo -e "\nNone of the jobs have run successfully. Please check the slurm log files for details.\n"
@@ -354,10 +376,10 @@ if [[ ! ${#out_of_memory[@]} -eq 0 ]] ; then
 fi
 
 # Plotting the vcf comparison values
-$curr_path/temp/miniconda3/bin/python3 truvari_plots.py $out/$out_name
+$curr_path/temp/miniconda3/bin/python3 truvari_plots.py $output
 
 # Checking if the plots are generated successfully or not
-count=`ls -1 $out/$out_name/*.pdf 2>/dev/null | wc -l`
+count=`ls -1 $output/*.pdf 2>/dev/null | wc -l`
 
 if [[ $count == 0 ]] ; then
    echo -e "\nThere is(are) some error(s) in the generation of plot files.\n"

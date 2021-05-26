@@ -27,7 +27,10 @@ start_time=$(date +"%s")
 curr_path=`pwd`
 
 # Setting the truvari path
-truvari_path=$curr_path/temp/miniconda3/bin
+truvari_path=$curr_path/temp/truvari/bin
+
+# Setting the bin path
+bin_path=$curr_path/temp/miniconda3/bin
 
 # Reading the full path of the vcf files
 echo -e "\nPlease enter the folder path of the VCF files which need to be compared. Default:current directory"
@@ -137,16 +140,12 @@ elif [[ ! -d $out ]] ; then
      echo -e "\nExiting the program......" `date` >> mainlog.txt
      exit 1
 
-# Checking if the output folder is non-empty
-elif [[ -d $out/$out_name && ! -z  $(ls -A $out/$out_name) ]] ; then
-     echo -e "\nThe output folder is not empty\n"
-     echo -e "\nThe output folder is not empty......" `date` >> mainlog.txt
-     echo -e "\nExiting the program......" `date` >> mainlog.txt
-     exit 1
-
 # Checking the existence of the output folder path
 elif [[ -d $out/$out_name ]] ; then
-     echo -e "\nPath of the output folder read......" `date` >> mainlog.txt
+     echo -e "\nThe output folder already exists\n"
+     echo -e "\nThe output folder already exists......" `date` >> mainlog.txt
+     echo -e "\nExiting the program......" `date` >> mainlog.txt
+     exit 1
 
 # Creating the new output folder
 else
@@ -260,7 +259,7 @@ echo -e "\nPlease enter the email address to get notified. Default: The email ad
 read mail_id
 
 # Checking the validity of the argument
-if [[ $mail_id != *@*.* ]] ; then
+if [[ ! -z $mail_id && $mail_id != *@*.* ]] ; then
    echo -e "\nInvalid Email Address\n"
    echo -e "\nInvalid Email Address......" `date` >> mainlog.txt
    echo -e "\nExiting the program......" `date` >> mainlog.txt
@@ -468,16 +467,12 @@ while getopts "f:g:r:o:c:k:n:s:p:t:m:a:e:hv" opt; do
            echo -e "\nExiting the program......" `date` >> mainlog.txt
            exit 1
 
-      # Checking if the output folder is non-empty
-      elif [[ -d $out/$out_name && ! -z  $(ls -A $out/$out_name) ]] ; then
-           echo -e "\nThe output folder is not empty\n"
-           echo -e "\nThe output folder is not empty......" `date` >> mainlog.txt
-           echo -e "\nExiting the program......" `date` >> mainlog.txt
-           exit 1
-
       # Checking the existence of the output folder path
       elif [[ -d $out/$out_name ]] ; then
-           true
+          echo -e "\nThe output folder already exists\n"
+          echo -e "\nThe output folder already exists......" `date` >> mainlog.txt
+          echo -e "\nExiting the program......" `date` >> mainlog.txt
+          exit 1
 
       # Creating the new output folder
       else
@@ -591,7 +586,7 @@ if [[ $ch == Y && -z $ch2 ]]; then
   exit 1
 fi
 
-if [[ -z "$ref" || -z "$vcf_gold" || -z "$out" ]] ; then
+if [[ -z "$ref" || -z "$vcf_gold" || -z "$out_name" ]] ; then
   echo -e "\nNot all the mandatory arguments are entered..."
   echo -e "\nNot all mandatory arguments are entered......" `date` >> mainlog.txt
   echo -e "\nType 'sh main.sh -h' for help\n"
@@ -657,11 +652,11 @@ files=`ls $vcf_folder/*.vcf`
 for var in $files
 do
 
-`$truvari_path/bgzip -c $var > $var.gz`
-
-echo -e "\nThe vcf files are compressed using the bgzip program" `date` >> mainlog.txt
+$truvari_path/bgzip -c $var > $var.gz
 
 done
+
+echo -e "\nThe vcf files are compressed using the bgzip program" `date` >> mainlog.txt
 
 files_index=`ls $vcf_folder/*.gz`
 
@@ -669,11 +664,11 @@ files_index=`ls $vcf_folder/*.gz`
 for var in $files_index
 do
 
-`$truvari_path/tabix -p vcf $var`
-
-echo -e "\nThe indexed files are created of the zipped vcf files\n\n" `date` >> mainlog.txt
+$bin_path/tabix -p vcf $var
 
 done
+
+echo -e "\nThe indexed files are created of the zipped vcf files\n\n" `date` >> mainlog.txt
 
 # Executing the generation of plots script in the background by taking the variables from the current shell
 source ./generate_plots.sh

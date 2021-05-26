@@ -35,15 +35,20 @@ echo -e "\nSetting the conda path......"
 
 echo -e "\nminiconda3 installation completed and it is installed in the minconda3 folder......"
 
-echo -e "\nInstalling the Truvari tool......"
+# Downloading the truvari tool version 2.1.1
 
-# Installing the truvari tool
-$k/temp/miniconda3/bin/pip install Truvari
+echo -e "\nInstalling the Truvari tool......\n"
 
-echo -e "\nInstalling tabix......"
+wget --no-check-certificate https://api.github.com/repos/spiralgenetics/truvari/tarball/v2.1.1
+tar -xzf v2.1.1
+rm v2.1.1
+mv spiralgenetics-truvari-d29fa90 truvari
 
-# Installing tabix
-$conda_path/conda install -y -c bioconda tabix
+echo -e "\nInstalling the required packages for the python3 default conda environment......" 
+echo -e "\n"
+
+# Installing the required packages for the python 3 environment
+$conda_path/conda install -y tabix pandas matplotlib xlsxwriter
 
 echo -e "\n"
 

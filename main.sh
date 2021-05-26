@@ -652,7 +652,7 @@ files=`ls $vcf_folder/*.vcf`
 for var in $files
 do
 
-$truvari_path/bgzip -c $var > $var.gz
+$bin_path/bgzip -c $var > $var.gz
 
 done
 

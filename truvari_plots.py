@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xlsxwriter
 from string import ascii_uppercase
+import json
+
 
 
 def autolabel(rects,ax):
@@ -45,7 +47,7 @@ def truvari_plots(filepath):
     """
     
     # Selecting the files that need to be compared
-    filepath=sys.argv[1]
+    #filepath=sys.argv[1]
     mylist = [f for f in glob.glob(filepath + "/*.summary.txt")]
 
     # Initializing lists for metrics calculations
@@ -74,7 +76,7 @@ def truvari_plots(filepath):
     # Extracting the file names
     for i in mylist:
         p = i.split("/",k)[-1]
-        p=p.split(".")[:-3]
+        p=p.split(".")[:-2]
         p=".".join(p)
         labels.append(p)
 
@@ -88,7 +90,7 @@ def truvari_plots(filepath):
     # Making the excel file containing the metrices
     
     # Initializing the excel workbook
-    workbook = xlsxwriter.Workbook('Analysis.xlsx')
+    workbook = xlsxwriter.Workbook(filepath + '/Analysis.xlsx')
     worksheet = workbook.add_worksheet('Metrics Scores.xlsx')
 
     # Setting the cell width

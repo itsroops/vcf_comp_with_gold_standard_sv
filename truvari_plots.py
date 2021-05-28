@@ -34,7 +34,7 @@ def autolabel(rects,ax):
                     ha='center', va='bottom')
 
 
-def truvari_plots(filepath):
+def truvari_plots():
     """
     Plots the combined barplots of the performance metrices for structural variants
             
@@ -118,9 +118,22 @@ def truvari_plots(filepath):
     
     for i in range(len(labels)):
         worksheet.write(row,0,labels[i], cell_fmt)
-        worksheet.write(row,1,metric_precision[i], cell_fmt )
-        worksheet.write(row,2,metric_recall[i], cell_fmt)
-        worksheet.write(row,3,metric_f1[i], cell_fmt)
+        
+        arr = np.array(metric_precision)
+        where_are_NaNs = isnan(arr)
+        arr[where_are_NaNs] = 0.0
+        worksheet.write(row,1,arr[i], cell_fmt )
+        
+        arr = np.array(metric_recall)
+        where_are_NaNs = isnan(arr)
+        arr[where_are_NaNs] = 0.0
+        worksheet.write(row,2,arr[i], cell_fmt )
+        
+        arr = np.array(metric_f1)
+        where_are_NaNs = isnan(arr)
+        arr[where_are_NaNs] = 0.0
+        worksheet.write(row,3,arr[i], cell_fmt )
+     
         row=row+1
     
     # Closing the workbook

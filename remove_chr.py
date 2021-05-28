@@ -14,7 +14,7 @@ def rem_chr():
     """
     f = open(sys.argv[1],"r")
     k = f.read()
-    k2 = re.sub('chr([1-9XYM])',r'\1',k)
+    k2 = re.sub('chr([1-9XYMUE])',r'\1',k)
     if sys.argv[2]=='Y' or sys.argv[2]=='y':
         f_name=sys.argv[1]
         f2 = open(f_name,"w")
